@@ -17,7 +17,7 @@
       register: contenidos
 
     - name: Escribir archivos en nodo destino
-      delegate_to: ubuntu-dst
+      delegate_to: server3
       copy:
         content: "{{ item.content | b64decode }}"
         dest: "/home/ansible/recibidos/{{ item.source | basename }}"
