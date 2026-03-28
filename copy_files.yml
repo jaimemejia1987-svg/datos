@@ -1,0 +1,26 @@
+---
+- name: Copiar archivos txt desde VM2 a VM3
+  hosts: server2
+  become: false
+  tasks:
+
+    - name: Leer lista de archivos txt en origen
+      find:
+        paths: /home/ansible/archivos
+        patterns: "*.txt"
+      register: archivos_encontrados
+
+    - name: Leer contenido de cada archivo
+      slurp:
+        src: "{{ item.path }}"
+      loop: "{{ archivos_encontrados.files }}"
+      register: contenidos
+
+    - name: Escribir archivos en nodo destino
+      delegate_to: ubuntu-dst
+      copy:
+        content: "{{ item.content | b64decode }}"
+        dest: "/home/ansible/recibidos/{{ item.source | basename }}"
+        owner: ansible
+        mode: '0644'
+      loop: "{{ contenidos.results }}"
