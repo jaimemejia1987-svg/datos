@@ -1,6 +1,6 @@
 ---
 - name: Copiar archivos txt desde VM2 a VM3
-  hosts: server2
+  hosts: 192.168.0.51
   become: false
   tasks:
 
@@ -17,7 +17,7 @@
       register: contenidos
 
     - name: Escribir archivos en nodo destino
-      delegate_to: server3
+      delegate_to: 192.168.0.52
       copy:
         content: "{{ item.content | b64decode }}"
         dest: "/home/ansible/recibidos/{{ item.source | basename }}"
